@@ -53,12 +53,24 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('mikutter'),
-        ),
-        body: FaqList(),
+      initialRoute: '/',
+      routes: <String, WidgetBuilder>{
+        '/': (BuildContext context) => FaqListPage(),
+        '/faq': (BuildContext context) =>
+            FaqPage(faq: ModalRoute.of(context).settings.arguments),
+      },
+    );
+  }
+}
+
+class FaqListPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('mikutter'),
       ),
+      body: FaqList(),
     );
   }
 }
@@ -108,28 +120,36 @@ class FaqListTile extends StatelessWidget {
     return ListTile(
       title: Text(faq.question),
       onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return Scaffold(
-                appBar: AppBar(
-                  title: Text('mikutter'),
-                ),
-                body: ListView(
-                  children: [
-                    ListTile(
-                        title:
-                            Text(faq.question, style: TextStyle(fontSize: 22))),
-                    ListTile(
-                        title:
-                            Text(faq.answer, style: TextStyle(fontSize: 14))),
-                  ],
-                ),
-              );
-            },
-          ),
-        );
+        Navigator.of(context).pushNamed('/faq', arguments: faq);
       },
+    );
+  }
+}
+
+class FaqPage extends StatelessWidget {
+  FaqPage({this.faq});
+
+  final Faq faq;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('mikutter'),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(faq.question, style: TextStyle(fontSize: 22)),
+              SizedBox(height: 8),
+              Text(faq.answer, style: TextStyle(fontSize: 14)),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
