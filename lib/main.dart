@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:http/http.dart' as http;
+import 'package:share/share.dart';
 
 void main() {
   runApp(MyApp());
@@ -57,7 +58,7 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         '/': (BuildContext context) => FaqListPage(),
         '/faq': (BuildContext context) =>
-            FaqPage(faq: ModalRoute.of(context).settings.arguments),
+            FaqDetailPage(faq: ModalRoute.of(context).settings.arguments),
       },
     );
   }
@@ -126,8 +127,8 @@ class FaqListTile extends StatelessWidget {
   }
 }
 
-class FaqPage extends StatelessWidget {
-  FaqPage({this.faq});
+class FaqDetailPage extends StatelessWidget {
+  FaqDetailPage({this.faq});
 
   final Faq faq;
 
@@ -136,6 +137,17 @@ class FaqPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('mikutter'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.share),
+            tooltip: '共有',
+            onPressed: () {
+              Share.share(
+                  "Q: ${faq.question}\n\nA: ${faq.answer}\n\nhttps://mikutter.hachune.net/faq",
+                  subject: faq.question);
+            },
+          )
+        ],
       ),
       body: SingleChildScrollView(
         child: Container(
